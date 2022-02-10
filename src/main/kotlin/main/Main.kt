@@ -1,6 +1,6 @@
 package main
 
-import model.dao.UniversalDAO
+import model.datasource.dao.UniversalDAO
 import model.entity.ad.Ad
 import org.hibernate.cfg.Configuration
 import org.springframework.boot.autoconfigure.SpringBootApplication

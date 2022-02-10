@@ -9,23 +9,26 @@ import javax.persistence.*
 open class DatabaseUser(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false) var id: Long?,
-    @Column var username: String?,
-    @Column var password: String?,
-    @Column var postPrice: String?,
-    @Column var storyPrice: String?
+    @Column(name = "id", nullable = false) var id: Long,
+    @Column var username: String,
+    @Column var password: String,
+    @Column var postPrice: String,
+    @Column var storyPrice: String,
+    @Column var cardNumber: String?
 ) {
     companion object {
         fun create(
             source: NetworkUser,
-            password: String?
+            password: String,
+            cardNumber: String?
         ) = with(source) {
             DatabaseUser(
                 id = id,
                 username = nickName,
                 password = password,
                 postPrice = postPrice,
-                storyPrice = storyPrice
+                storyPrice = storyPrice,
+                cardNumber = cardNumber
             )
         }
     }

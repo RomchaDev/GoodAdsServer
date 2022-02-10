@@ -1,4 +1,4 @@
-package model.dao
+package model.datasource.dao
 
 import org.hibernate.Session
 import org.hibernate.SessionFactory
@@ -20,6 +20,12 @@ class UniversalDAO<D, K : Serializable>(
     }
 
     override fun update(entity: D) {
+        withSession {
+            it.update(entity)
+        }
+    }
+
+    override fun saveOrUpdate(entity: D) {
         withSession {
             it.saveOrUpdate(entity)
         }
