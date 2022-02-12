@@ -11,6 +11,4 @@ interface AdsRepository {
     suspend fun deleteAd(id: Long)
 
     suspend fun getAds(start: Int, end: Int) : Ads
-
-
 }

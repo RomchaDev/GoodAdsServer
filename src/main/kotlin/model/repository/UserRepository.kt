@@ -18,5 +18,5 @@ interface UserRepository {
         start: Int,
         end: Int,
         myUserToken: String
-    )
+    ): List<NetworkUser>
 }

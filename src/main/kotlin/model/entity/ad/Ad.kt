@@ -13,5 +13,5 @@ open class Ad(
     @Column var userId: String?,
     @Column var price: String?,
     @Column var places: Int?,
-    @Column var occupiedPlaces: Int?
+    @Column var occupiedPlaces: Int?,
 )

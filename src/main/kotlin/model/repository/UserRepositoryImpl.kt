@@ -19,13 +19,7 @@ class UserRepositoryImpl(
 
     override suspend fun getNetworkUser(id: Long): NetworkUser {
         val user = localDataSource.read(id)
-        val auth = AuthEntity(
-            username = user.username,
-            password = user.password,
-            postPrice = user.postPrice,
-            storyPrice = user.storyPrice,
-            cardNumber = user.cardNumber
-        )
+        val auth = AuthEntity.create(user)
 
         return remoteDataSource.getNetworkUser(auth)
     }
@@ -55,7 +49,13 @@ class UserRepositoryImpl(
         start: Int,
         end: Int,
         myUserToken: String
-    ) {
-        TODO("Not yet implemented")
+    ): List<NetworkUser> {
+        val users = localDataSource.read(start, end)
+        val id = tokenDataSource.read(myUserToken).userId
+        users.toMutableList().removeAll { it.id == id }
+        return users.map {
+            val auth = AuthEntity.create(it)
+            remoteDataSource.getNetworkUser(auth)
+        }
     }
 }
