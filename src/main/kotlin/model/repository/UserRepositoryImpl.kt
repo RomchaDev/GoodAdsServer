@@ -6,6 +6,7 @@ import model.entity.token.Token
 import model.entity.user.AuthEntity
 import model.entity.user.DatabaseUser
 import model.entity.user.NetworkUser
+import model.entity.user.Users
 import model.token.TokenGenerator
 
 class UserRepositoryImpl(
@@ -49,13 +50,16 @@ class UserRepositoryImpl(
         start: Int,
         end: Int,
         myUserToken: String
-    ): List<NetworkUser> {
+    ): Users {
         val users = localDataSource.read(start, end)
         val id = tokenDataSource.read(myUserToken).userId
         users.toMutableList().removeAll { it.id == id }
-        return users.map {
+
+        val list =  users.map {
             val auth = AuthEntity.create(it)
             remoteDataSource.getNetworkUser(auth)
         }
+
+        return Users(list)
     }
 }

@@ -2,6 +2,7 @@ package model.repository
 
 import model.entity.user.AuthEntity
 import model.entity.user.NetworkUser
+import model.entity.user.Users
 
 interface UserRepository {
     suspend fun getNetworkUser(auth: AuthEntity): NetworkUser
@@ -18,5 +19,5 @@ interface UserRepository {
         start: Int,
         end: Int,
         myUserToken: String
-    ): List<NetworkUser>
+    ): Users
 }
