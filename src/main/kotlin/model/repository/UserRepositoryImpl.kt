@@ -10,19 +10,19 @@ import model.entity.user.Users
 import model.token.TokenGenerator
 
 class UserRepositoryImpl(
-    private val localDataSource: DAO<DatabaseUser, Long>,
-    private val remoteDataSource: InstagramDataSource,
+    private val localUsersDataSource: DAO<DatabaseUser, Long>,
+    private val remoteUsersDataSource: InstagramDataSource,
     private val tokenDataSource: DAO<Token, String>,
     private val tokenGenerator: TokenGenerator
 ) : UserRepository {
     override suspend fun getNetworkUser(auth: AuthEntity) =
-        remoteDataSource.getNetworkUser(auth)
+        remoteUsersDataSource.getNetworkUser(auth)
 
     override suspend fun getNetworkUser(id: Long): NetworkUser {
-        val user = localDataSource.read(id)
+        val user = localUsersDataSource.read(id)
         val auth = AuthEntity.create(user)
 
-        return remoteDataSource.getNetworkUser(auth)
+        return remoteUsersDataSource.getNetworkUser(auth)
     }
 
     override suspend fun getNetworkUser(tokenStr: String): NetworkUser {
@@ -32,18 +32,18 @@ class UserRepositoryImpl(
 
     override suspend fun saveNetworkUser(user: NetworkUser, auth: AuthEntity) {
         val databaseUser = DatabaseUser.create(user, auth.password, auth.cardNumber)
-        val id = localDataSource.create(databaseUser) as Long
+        val id = localUsersDataSource.create(databaseUser) as Long
         val token = tokenGenerator.generate()
         tokenDataSource.create(Token(token, id))
     }
 
     override suspend fun updateNetworkUser(user: NetworkUser) {
-        val databaseUser = localDataSource.read(user.id)
+        val databaseUser = localUsersDataSource.read(user.id)
         databaseUser.cardNumber = user.cardNumber
         databaseUser.username = user.nickName
         databaseUser.postPrice = user.postPrice
         databaseUser.storyPrice = user.storyPrice
-        localDataSource.update(databaseUser)
+        localUsersDataSource.update(databaseUser)
     }
 
     override suspend fun getAllExceptMy(
@@ -51,13 +51,13 @@ class UserRepositoryImpl(
         end: Int,
         myUserToken: String
     ): Users {
-        val users = localDataSource.read(start, end)
+        val users = localUsersDataSource.read(start, end)
         val id = tokenDataSource.read(myUserToken).userId
         users.toMutableList().removeAll { it.id == id }
 
         val list =  users.map {
             val auth = AuthEntity.create(it)
-            remoteDataSource.getNetworkUser(auth)
+            remoteUsersDataSource.getNetworkUser(auth)
         }
 
         return Users(list)

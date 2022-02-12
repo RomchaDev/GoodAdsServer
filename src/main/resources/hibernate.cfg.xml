@@ -4,10 +4,12 @@
         <property name="connection.url">jdbc:postgresql://localhost:5432/good_ads</property>
         <property name="connection.driver_class">org.postgresql.Driver</property>
         <property name="connection.username">postgres</property>
-        <property name="connection.password">architop228</property>
+        <property name="connection.password">lamandrik</property>
         <property name="dialect">org.hibernate.dialect.PostgreSQL94Dialect</property>
         <property name="show_sql">true</property>
 
         <mapping class="model.entity.ad.Ad" />
+        <mapping class="model.entity.user.DatabaseUser" />
+        <mapping class="model.entity.token.Token" />
     </session-factory>
 </hibernate-configuration>

@@ -8,12 +8,32 @@ fun main() {
             "open class DatabaseUser(\n" +
             "    @Id\n" +
             "    @GeneratedValue(strategy = GenerationType.IDENTITY)\n" +
-            "    @Column(name = \"id\", nullable = false) var id: Long?,\n" +
-            "    @Column var username: String?,\n" +
-            "    @Column var password: String?,\n" +
-            "    @Column var postPrice: String?,\n" +
-            "    @Column var storyPrice: String?\n" +
-            ")"
+            "    @Column(name = \"id\", nullable = false) var id: Long,\n" +
+            "    @Column var username: String,\n" +
+            "    @Column var password: String,\n" +
+            "    @Column var postPrice: String,\n" +
+            "    @Column var storyPrice: String,\n" +
+            "    @Column var cardNumber: String?,\n" +
+            "    @OneToMany\n" +
+            "    @Column var ads: MutableList<Ad>? = null\n" +
+            ") {\n" +
+            "    companion object {\n" +
+            "        fun create(\n" +
+            "            source: NetworkUser,\n" +
+            "            password: String,\n" +
+            "            cardNumber: String?\n" +
+            "        ) = with(source) {\n" +
+            "            DatabaseUser(\n" +
+            "                id = id,\n" +
+            "                username = nickName,\n" +
+            "                password = password,\n" +
+            "                postPrice = postPrice,\n" +
+            "                storyPrice = storyPrice,\n" +
+            "                cardNumber = cardNumber\n" +
+            "            )\n" +
+            "        }\n" +
+            "    }\n" +
+            "}"
 
     val types = mapOf(
         "String" to "VARCHAR(25)",

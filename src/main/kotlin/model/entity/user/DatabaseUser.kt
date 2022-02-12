@@ -6,12 +6,15 @@ import javax.persistence.*
 
 @Entity
 @NoArg
-@Table(name = "users")
+@Table(
+    name = "users",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["username"])]
+)
 open class DatabaseUser(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false) var id: Long,
-    @Column var username: String,
+    @Column(unique = true) var username: String,
     @Column var password: String,
     @Column var postPrice: String,
     @Column var storyPrice: String,
