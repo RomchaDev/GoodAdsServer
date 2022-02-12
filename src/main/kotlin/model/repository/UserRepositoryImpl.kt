@@ -6,11 +6,13 @@ import model.entity.token.Token
 import model.entity.user.AuthEntity
 import model.entity.user.DatabaseUser
 import model.entity.user.NetworkUser
+import model.token.TokenGenerator
 
 class UserRepositoryImpl(
     private val localDataSource: DAO<DatabaseUser, Long>,
     private val remoteDataSource: InstagramDataSource,
-    private val tokenDataSource: DAO<Token, String>
+    private val tokenDataSource: DAO<Token, String>,
+    private val tokenGenerator: TokenGenerator
 ) : UserRepository {
     override suspend fun getNetworkUser(auth: AuthEntity) =
         remoteDataSource.getNetworkUser(auth)
@@ -34,11 +36,26 @@ class UserRepositoryImpl(
     }
 
     override suspend fun saveNetworkUser(user: NetworkUser, auth: AuthEntity) {
-
-        //localDataSource.create()
+        val databaseUser = DatabaseUser.create(user, auth.password, auth.cardNumber)
+        val id = localDataSource.create(databaseUser) as Long
+        val token = tokenGenerator.generate()
+        tokenDataSource.create(Token(token, id))
     }
 
-    override suspend fun getAllExceptMy(start: Int, end: Int, myUserToken: String) {
+    override suspend fun updateNetworkUser(user: NetworkUser) {
+        val databaseUser = localDataSource.read(user.id)
+        databaseUser.cardNumber = user.cardNumber
+        databaseUser.username = user.nickName
+        databaseUser.postPrice = user.postPrice
+        databaseUser.storyPrice = user.storyPrice
+        localDataSource.update(databaseUser)
+    }
+
+    override suspend fun getAllExceptMy(
+        start: Int,
+        end: Int,
+        myUserToken: String
+    ) {
         TODO("Not yet implemented")
     }
 }

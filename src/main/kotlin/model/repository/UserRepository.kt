@@ -12,11 +12,11 @@ interface UserRepository {
 
     suspend fun saveNetworkUser(user: NetworkUser, auth: AuthEntity)
 
+    suspend fun updateNetworkUser(user: NetworkUser)
+
     suspend fun getAllExceptMy(
         start: Int,
         end: Int,
         myUserToken: String
     )
-
-
 }

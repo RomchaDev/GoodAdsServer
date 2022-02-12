@@ -3,14 +3,16 @@ package model.datasource.dao
 import org.hibernate.Session
 import org.hibernate.SessionFactory
 import java.io.Serializable
+import javax.persistence.criteria.CriteriaBuilder
+
 
 class UniversalDAO<D, K : Serializable>(
     private val factory: SessionFactory,
     private val entityClass: Class<D>
 ) : DAO<D, K> {
 
-    override fun create(entity: D) {
-        withSession {
+    override fun create(entity: D): Serializable {
+        return withSession {
             it.save(entity)
         }
     }
@@ -18,6 +20,18 @@ class UniversalDAO<D, K : Serializable>(
     override fun read(key: K): D = withSession(false) {
         it.get(entityClass, key)
     }
+
+    override fun read(first: Int, last: Int): List<D> =
+        withSession(false) { s ->
+            val cb: CriteriaBuilder = s.criteriaBuilder
+            val cq = cb.createQuery(entityClass)
+            val rootEntry = cq.from(entityClass)
+            val all = cq.select(rootEntry)
+            val allQuery = s.createQuery(all)
+            allQuery.firstResult = first
+            allQuery.maxResults = last - first
+            allQuery.resultList
+        }
 
     override fun update(entity: D) {
         withSession {
