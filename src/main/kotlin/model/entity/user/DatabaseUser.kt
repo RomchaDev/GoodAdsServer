@@ -1,5 +1,6 @@
 package model.entity.user
 
+import model.entity.ad.Ad
 import project_utils.NoArg
 import javax.persistence.*
 
@@ -14,7 +15,9 @@ open class DatabaseUser(
     @Column var password: String,
     @Column var postPrice: String,
     @Column var storyPrice: String,
-    @Column var cardNumber: String?
+    @Column var cardNumber: String?,
+    @OneToMany
+    @Column var ads: MutableList<Ad>? = null
 ) {
     companion object {
         fun create(

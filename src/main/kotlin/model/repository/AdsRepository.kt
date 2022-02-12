@@ -6,9 +6,11 @@ import model.entity.ad.Ads
 interface AdsRepository {
     suspend fun createEditAd(ad: Ad)
 
-    suspend fun getAd(id: Long) : Ad
+    suspend fun getAd(id: Long): Ad
 
     suspend fun deleteAd(id: Long)
 
-    suspend fun getAds(start: Int, end: Int) : Ads
+    suspend fun getAds(start: Int, end: Int): Ads
+
+    suspend fun getAdsByUserId(userId: Long, start: Int, end: Int): Ads
 }
