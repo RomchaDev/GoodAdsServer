@@ -18,7 +18,7 @@ fun main() {
     adsDAO.create(
         Ad(
             1,
-            "1",
+            123,
             "300",
             3,
             2
