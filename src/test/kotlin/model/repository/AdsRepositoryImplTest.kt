@@ -11,6 +11,8 @@ import model.entity.user.DatabaseUser
 import model.entity.user.NetworkUser
 import model.token.RandomTokenGenerator
 import org.hibernate.cfg.Configuration
+import org.junit.jupiter.api.BeforeEach
+import javax.persistence.Query
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -19,6 +21,7 @@ class AdsRepositoryImplTest {
 
     private lateinit var repository: AdsRepository
     private lateinit var userRepository: UserRepository
+    private val factory = Configuration().configure().buildSessionFactory()
 
     private val startAd = Ad(
         id = null,
@@ -60,7 +63,6 @@ class AdsRepositoryImplTest {
 
     @BeforeTest
     fun beforeAll() {
-        val factory = Configuration().configure().buildSessionFactory()
         val adsDAO = UniversalDAO<Ad, Long>(factory, Ad::class.java)
         val usersDAO = UniversalDAO<DatabaseUser, Long>(factory, DatabaseUser::class.java)
 
@@ -80,11 +82,23 @@ class AdsRepositoryImplTest {
         )
     }
 
+    @BeforeEach
+    fun beforeEach() {
+        val session = factory.openSession()
+        session.beginTransaction()
+        val adsQuery: Query = session.createQuery("delete from Ad")
+        val idQuery: Query = session.createQuery("ALTER TABLE Ad AUTO_INCREMENT = 1")
+        adsQuery.executeUpdate()
+        idQuery.executeUpdate()
+        session.transaction.commit()
+        session.close()
+    }
+
     @Test
     fun createEditAd() {
         runBlocking {
             repository.createEditAd(startAd)
-            val ad = repository.getAd(14)
+            val ad = repository.getAd(1)
             assertEquals(ad.price, "300$")
         }
     }
@@ -93,7 +107,7 @@ class AdsRepositoryImplTest {
     fun deleteAd() {
         runBlocking {
             repository.createEditAd(startAd)
-            repository.deleteAd(9)
+            repository.deleteAd(5)
 
             val ads = repository.getAds(0, 10)
             assertEquals(ads, Ads(listOf()))
@@ -104,7 +118,7 @@ class AdsRepositoryImplTest {
     fun getAdsByUserId() {
         runBlocking {
             userRepository.saveNetworkUser(startUser, startAuth)
-            val ads = repository.getAdsByUserId(1, 0, 1)
+            val ads = repository.getAdsByUserId(123, 0, 1)
             assertEquals(ads.adsList[0].price, "300$")
         }
     }
