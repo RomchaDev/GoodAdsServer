@@ -1,7 +1,7 @@
 package model.entity.user
 
 data class AuthEntity(
-    val username: String,
+    var username: String,
     val password: String,
     val postPrice: String,
     val storyPrice: String,

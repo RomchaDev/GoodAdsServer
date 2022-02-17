@@ -11,10 +11,12 @@ class UniversalDAO<D, K : Serializable>(
     private val entityClass: Class<D>
 ) : DAO<D, K> {
 
-    override fun create(entity: D): Serializable {
-        return withSession {
+    override fun create(entity: D) = try {
+        withSession {
             it.save(entity)
         }
+    } catch (e: Exception) {
+        null
     }
 
     override fun read(key: K): D = withSession(false) {
@@ -61,6 +63,7 @@ class UniversalDAO<D, K : Serializable>(
 
         return block(session).also {
             if (beginTransaction) session.transaction.commit()
+            session.close()
         }
     }
 }

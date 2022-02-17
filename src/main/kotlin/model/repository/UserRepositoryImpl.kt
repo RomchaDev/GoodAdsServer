@@ -32,9 +32,10 @@ class UserRepositoryImpl(
 
     override suspend fun saveNetworkUser(user: NetworkUser, auth: AuthEntity) {
         val databaseUser = DatabaseUser.create(user, auth.password, auth.cardNumber)
-        val id = localUsersDataSource.create(databaseUser) as Long
+        localUsersDataSource.create(databaseUser)
+
         val token = tokenGenerator.generate()
-        tokenDataSource.create(Token(token, id))
+        tokenDataSource.create(Token(token, user.id))
     }
 
     override suspend fun updateNetworkUser(user: NetworkUser) {
@@ -51,9 +52,12 @@ class UserRepositoryImpl(
         end: Int,
         myUserToken: String
     ): Users {
-        val users = localUsersDataSource.read(start, end)
+        val users = localUsersDataSource.read(start, end).toMutableList()
         val id = tokenDataSource.read(myUserToken).userId
-        users.toMutableList().removeAll { it.id == id }
+        users.removeIf {
+            val res = it.id == id
+            res
+        }
 
         val list =  users.map {
             val auth = AuthEntity.create(it)

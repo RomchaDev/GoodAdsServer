@@ -7,7 +7,7 @@ import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest
 
 class InstagramDataSourceImpl : InstagramDataSource {
     override suspend fun getNetworkUser(
-        authEntity: AuthEntity
+        authEntity: AuthEntity,
     ): NetworkUser {
         val instagram = Instagram4j
             .builder()
@@ -31,7 +31,7 @@ class InstagramDataSourceImpl : InstagramDataSource {
 
         return with(instagramUser) {
             NetworkUser(
-                id = instagram4j.userId,
+                id = instagramUser.pk,
                 nickName = username,
                 name = full_name,
                 bio = biography,

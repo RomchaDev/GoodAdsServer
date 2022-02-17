@@ -5,6 +5,6 @@ import model.entity.user.NetworkUser
 
 interface InstagramDataSource {
     suspend fun getNetworkUser(
-        authEntity: AuthEntity
+        authEntity: AuthEntity,
     ): NetworkUser
 }

@@ -12,15 +12,15 @@ import javax.persistence.*
 )
 open class DatabaseUser(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false) var id: Long,
     @Column(unique = true) var username: String,
     @Column var password: String,
     @Column var postPrice: String,
     @Column var storyPrice: String,
     @Column var cardNumber: String?,
-    @OneToMany
-    @Column var ads: MutableList<Ad>? = null
+    @Column var adId: Long? = null,
+    @OneToMany(targetEntity = Ad::class, mappedBy = "id", fetch = FetchType.LAZY)
+    var ads: MutableList<Ad>? = null
 ) {
     companion object {
         fun create(

@@ -1,12 +1,7 @@
 package model.token
 
-import java.security.SecureRandom
+import java.util.*
 
 class RandomTokenGenerator : TokenGenerator {
-    override fun generate(): String {
-        val random = SecureRandom()
-        val bytes = ByteArray(20)
-        random.nextBytes(bytes)
-        return bytes.toString()
-    }
+    override fun generate() = UUID.randomUUID().toString();
 }
