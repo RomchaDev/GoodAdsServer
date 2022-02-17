@@ -10,7 +10,7 @@ open class Ad(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name =  "id", nullable = false) var id: Long?,
-    @Column var userId: String?,
+    @Column var userId: Long?,
     @Column var price: String?,
     @Column var places: Int?,
     @Column var occupiedPlaces: Int?,
